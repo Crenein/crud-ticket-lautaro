@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addTicket } from '../features/ticketsSlice'
+import { addTicket } from '../redux/slices/ticketsSlice'
 import axios from 'axios';
 
 export default function ticketForm() {

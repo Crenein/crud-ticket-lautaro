@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { deleteTicket } from '../features/ticketsSlice'
+import { deleteTicket } from '../redux/slices/ticketsSlice'
 import {FiFilter} from 'react-icons/fi'
 import TicketModal from './TicketModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { editTicket } from '../features/ticketsSlice';
+import { editTicket } from '../redux/slices/ticketsSlice';
 
 
 export default function TicketModal({setIsModalOpen,selectedTicket,setSelectedTicket, filteredTickets ,setFilteredTickets}) {
