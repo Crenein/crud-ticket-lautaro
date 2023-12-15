@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { deleteTicket } from '../features/ticketsSlice'
 import {FiFilter} from 'react-icons/fi'
 import TicketModal from './TicketModal'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default function TicketTable() {
   const dispatch = useDispatch();
@@ -116,7 +119,10 @@ export default function TicketTable() {
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-2">
       <div className='flex flex-row bg-blue-800 border-b border-white'>
         {(showRemoveFilter ) && (
-          <button onClick={handleRemoveFilters} className="py-1 px-3 m-4 absolute bg-red-500 text-white rounded">Quitar filtros</button>
+          <button onClick={handleRemoveFilters} className=" absolute focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium text-s rounded-lg m-4 p-2 w-44">
+            <FontAwesomeIcon icon={faTrash} className='pr-4'/>
+            Quitar filtros
+          </button>
         )}
         <h3 className="text-3xl font-medium text-white w-full text-center py-4 ">Tickets</h3>
       </div>        
@@ -135,14 +141,15 @@ export default function TicketTable() {
                         </div>  
                       ) : (
                         <FiFilter className="mt-1" onClick={() => setShowTitleFilter(!showTitleFilter)} />
+                      )} 
+                    </div>                      
+                      {showTitleFilter && (
+                        <div className='flex flex-row bg-blue-800 space-x-4 text-white rounded absolute p-3 mt-4 -ml-6 items-center'>                        
+                          <input type="text" className="text-black p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={titleFilter} onChange={event => setTitleFilter(event.target.value)} placeholder="Filtrar por titulo" />
+                          <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>                      
+                        </div>
                       )}
-                    </div>
-                    {showTitleFilter && (
-                      <div className='flex flex-row bg-blue-600 space-x-4 text-white rounded'>
-                        <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>                        
-                        <input type="text" className="text-black mt-4 p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={titleFilter} onChange={event => setTitleFilter(event.target.value)} placeholder="Filtrar por titulo" />
-                      </div>
-                    )}  
+                     
                   </th>
                   <th scope="col" className="px-6 py-3 border-r border-white">
                     <div className='flex flex-row space-x-4'>
@@ -156,9 +163,9 @@ export default function TicketTable() {
                       )}                      
                     </div>
                     {showDescriptionFilter && (
-                      <div>
-                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500 ml-8  text-white rounded">Filtrar</button>
-                        <input type="text" className="text-black mt-4  p-2  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={descriptionFilter} onChange={(event) => setDescriptionFilter(event.target.value)} placeholder="Filtrar por descripcion" />
+                      <div className='flex flex-row bg-blue-800 space-x-4 text-white rounded absolute p-3 mt-4 -ml-6 items-center'>
+                        <input type="text" className="text-black p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={descriptionFilter} onChange={(event) => setDescriptionFilter(event.target.value)} placeholder="Filtrar por descripcion" />
+                        <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>
                       </div>                      
                     )}  
                   </th>
@@ -174,13 +181,13 @@ export default function TicketTable() {
                       )}                      
                     </div>
                     {showStateFilter && (
-                      <div>
-                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500  ml-8  text-white rounded">Filtrar</button>                      
-                        <select className="text-gray-400 mt-4  p-3  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={stateFilter} onChange={(event) => setStateFilter(event.target.value)}>
+                      <div className='flex flex-row bg-blue-800 space-x-4 text-white rounded absolute p-3 mt-4 -ml-6 items-center'>                                              
+                        <select className="text-gray-400 p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={stateFilter} onChange={(event) => setStateFilter(event.target.value)}>
                           <option >Sin filtro</option>
                           <option >Abierto</option>
                           <option >Cerrado</option>                      
                         </select>
+                        <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>
                       </div> 
                     )}  
                   </th>
@@ -197,15 +204,15 @@ export default function TicketTable() {
                       )}                      
                     </div>
                     {showCategoryFilter && (
-                      <div>
-                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500  ml-8  text-white rounded">Filtrar</button>
-                        <select className="text-gray-400 mt-4  p-2  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+                      <div className='flex flex-row bg-blue-800 space-x-4 text-white rounded absolute p-3 mt-4 -ml-6 items-center'>                        
+                        <select className="text-gray-400 p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
                           <option >Sin filtro</option>
                           <option >Soporte</option>
                           <option >Interno</option>
                           <option >Mudanza</option>
                           <option >Instalacion</option>                                            
                         </select>
+                        <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>
                       </div>                       
                     )} 
                   </th>
@@ -217,25 +224,31 @@ export default function TicketTable() {
           <tbody>                     
             {(filteredTickets.length >= 1 ? filteredTickets : tickets).map((ticket, index) => (
               <tr key={index} className="odd:bg-white even:bg-gray-50">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <th scope="row" className="px-6 py-4 font-medium text-lg text-gray-900 whitespace-nowrap">
                   {ticket.ticketId}
                 </th>
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <th scope="row" className="px-6 py-4 text-lg text-black">
                   {ticket.ticketTitle}
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-lg text-black">
                   {ticket.ticketDescription}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-lg text-black">
                   {ticket.ticketState}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-lg text-black">
                   {ticket.ticketCategory}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-lg text-black">
                 <div className='flex flex-row'>                  
-                  <button type="button" onClick={()=>handleModal(ticket)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">Editar</button>
-                  <button onClick={()=>{handleDelete(ticket.ticketId)}} type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Borrar</button>
+                  <button type="button" onClick={()=>handleModal(ticket)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                    <FontAwesomeIcon icon={faPencilAlt}  className='pr-4'/>
+                    Editar
+                  </button>
+                  <button onClick={()=>{handleDelete(ticket.ticketId)}} type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2">
+                    <FontAwesomeIcon icon={faTrash} className='pr-4'/>
+                    Borrar
+                  </button>
                 </div>                
                 </td>
               </tr>
