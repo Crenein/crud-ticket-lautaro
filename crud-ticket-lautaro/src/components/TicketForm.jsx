@@ -76,8 +76,7 @@ export default function ticketForm() {
             description: description,
             status_id: selectedState, -Deberia ser un numero ya que los estados se indexan por numero
             category_id: selectedCategory, -Deberia ser un numero ya que las categorias se indexan por numero
-            spaces: selectedSpace, -Para este campo faltaria el input en el formulario   
-            authorization: token -Ver estructura de la API para saber si el token se pasa asi o de otra forma       
+            spaces: selectedSpace, -Para este campo faltaria el input en el formulario                
           },
           {
             headers: {

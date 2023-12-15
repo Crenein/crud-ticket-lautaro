@@ -243,7 +243,7 @@ export default function TicketTable() {
             {(filteredTickets.length >= 1 ? filteredTickets : tickets).map((ticket, index) => (
               <tr key={index} className="odd:bg-white even:bg-gray-50">
                 <th scope="row" className="px-6 py-4 font-medium text-lg text-gray-900 whitespace-nowrap">
-                  {ticket.ticketId}
+                  {ticket.ticketId + 1}
                 </th>
                 <th scope="row" className="px-6 py-4 text-lg text-black">
                   {ticket.ticketTitle}
