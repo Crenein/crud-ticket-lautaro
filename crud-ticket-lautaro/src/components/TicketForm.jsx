@@ -15,7 +15,7 @@ export default function ticketForm() {
         password: "pruebaLautaro",
       });
       console.log(response.data);
-      token = response.data.token;
+      setToken(response.data.token);
     }catch(error) {
       console.error(error);
     }
@@ -24,7 +24,10 @@ export default function ticketForm() {
   useEffect(() => {
     getToken();
   },[])
+
+  const [token, setToken] = useState('');
   */
+
 
   const dispatch = useDispatch();
 
@@ -65,7 +68,7 @@ export default function ticketForm() {
     e.preventDefault();
 
     /*
-    const getToken = async () => {
+    const createTicket = async () => {
       try{
         const response = await axios.post('https://lautaro.ispbrain.io:4443/api/v2/tickets', {
           {
@@ -75,6 +78,11 @@ export default function ticketForm() {
             category_id: selectedCategory, -Deberia ser un numero ya que las categorias se indexan por numero
             spaces: selectedSpace, -Para este campo faltaria el input en el formulario   
             authorization: token -Ver estructura de la API para saber si el token se pasa asi o de otra forma       
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         });
         console.log(response.data);        

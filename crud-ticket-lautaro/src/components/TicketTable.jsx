@@ -15,16 +15,34 @@ export default function TicketTable() {
   /*
     const getToken = async () => {
       try{
-        const response = await axios.get('https://lautaro.ispbrain.io:4443/api/v2/tickets?page[size]=10&page[number]=1', {
-          {
-            authorization : token -token deber ser pasado desde el form donde traemos el token          
-          }
+        const response = await axios.post('https://plataform.crenein.com/api/login', {
+          email: "pruebaLautaro",
+          password: "pruebaLautaro",
         });
-        console.log(response.data);        
+        console.log(response.data);
+        setToken(response.data.token);
       }catch(error) {
         console.error(error);
       }
     }
+
+
+    const getTickets = async () => {
+      try{
+        const response = await axios.get('https://lautaro.ispbrain.io:4443/api/v2/tickets?page[size]=10&page[number]=1', {
+          headers: {
+            Authorization: `Bearer ${getToken}`, // Asegúrate de que el token se pasa correctamente
+          },
+        });
+        setTickets(response.data);        
+      }catch(error) {
+        console.error(error);
+      }
+    }
+
+    useEffect(() => {
+      getTickets();
+    },[])
   */
 
   const tickets = useSelector((state) => state.tickets);  
