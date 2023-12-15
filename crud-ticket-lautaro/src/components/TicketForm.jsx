@@ -1,9 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addTicket } from '../features/ticketsSlice'
+import axios from 'axios';
 
-export default function ticketForm() {  
+export default function ticketForm() {
+
+
+  /*
+  const getToken = async () => {
+    try{
+      const response = await axios.post('https://plataform.crenein.com/api/login', {
+        email: "pruebaLautaro",
+        password: "pruebaLautaro",
+      });
+      console.log(response.data);
+      token = response.data.token;
+    }catch(error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getToken();
+  },[])
+  */
+
   const dispatch = useDispatch();
 
   const [id, setId] = useState(0);
@@ -42,6 +64,26 @@ export default function ticketForm() {
 
     e.preventDefault();
 
+    /*
+    const getToken = async () => {
+      try{
+        const response = await axios.post('https://lautaro.ispbrain.io:4443/api/v2/tickets', {
+          {
+            title: title,
+            description: description,
+            status_id: selectedState, -Deberia ser un numero ya que los estados se indexan por numero
+            category_id: selectedCategory, -Deberia ser un numero ya que las categorias se indexan por numero
+            spaces: selectedSpace, -Para este campo faltaria el input en el formulario   
+            authorization: token -Ver estructura de la API para saber si el token se pasa asi o de otra forma       
+          }
+        });
+        console.log(response.data);        
+      }catch(error) {
+        console.error(error);
+      }
+    }
+    */
+
     const newTicket = {
       ticketId: id,
       ticketTitle: title,
@@ -63,14 +105,16 @@ export default function ticketForm() {
     <div className="flex flex-col items-center">      
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6 bg-blue-200 w-full pb-8" action="#">
           <h1 className="text-4xl font-medium bg-blue-700 text-white w-full text-center py-4">Agregar Ticket</h1>
-          <div className="flex flex-row items-center justify-center mb-5">
-            <label htmlFor="title" className="block mb-2 text-lg font-medium text-gray-900 pr-8">Titulo *</label>
-            <input onChange={(event)=> setTitle(event.target.value)} value= {title} type="text" id="title" className="bg-gray-50 border border-gray-300 text-lg rounded-lg block p-4" required/>
-          </div>
-          <div className="flex flex-row items-center justify-center mb-5 pr-5">
-            <label htmlFor="description" className="block mb-2 text-lg font-medium text-gray-900 pr-2">Descripcion *</label>
-            <textarea onChange={(event)=> setDescription(event.target.value)} value={description} type="text" id="description" className="bg-gray-50 border border-gray-300 text-lg rounded-lg block p-4" required/>
-          </div>
+          <div className="flex flex-col justify-center items-start">
+            <div className="flex flex-row items-center justify-center mb-5">
+              <label htmlFor="title" className="block mb-2 text-lg font-medium text-gray-900 pr-8">Titulo *</label>
+              <input onChange={(event)=> setTitle(event.target.value)} value= {title} type="text" id="title" className="bg-gray-50 border border-gray-300 text-lg rounded-lg block p-4 ml-14" required/>
+            </div>
+            <div className="flex flex-row justify-start mb-5 pr-5">
+              <label htmlFor="description" className="block mb-2 text-lg font-medium text-gray-900 pr-2">Descripcion *</label>
+              <textarea onChange={(event)=> setDescription(event.target.value)} value={description} type="text" id="description" className="bg-gray-50 border border-gray-300 text-lg rounded-lg block pl-4 pt-4 pb-28 pr-16 ml-8" required/>
+            </div>
+          </div>  
           <div className="flex flex-row space-x-16">
             <div className="relative">     
               <button onClick={toggleDropdownState} id="dropdownDefaultButton" data-dropdown-toggle="stateDropdown" className="text-blue-700 bg-white hover:bg-blue-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg p-5 text-center inline-flex items-center" type="button">{selectedState} *

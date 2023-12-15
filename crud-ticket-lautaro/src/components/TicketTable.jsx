@@ -1,107 +1,250 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { deleteTicket } from '../features/ticketsSlice'
+import {FiFilter} from 'react-icons/fi'
+import TicketModal from './TicketModal'
 
 export default function TicketTable() {
   const dispatch = useDispatch();
 
-  const tickets = useSelector((state) => state.tickets);
+  /*
+    const getToken = async () => {
+      try{
+        const response = await axios.get('https://lautaro.ispbrain.io:4443/api/v2/tickets?page[size]=10&page[number]=1', {
+          {
+            authorization : token -token deber ser pasado desde el form donde traemos el token          
+          }
+        });
+        console.log(response.data);        
+      }catch(error) {
+        console.error(error);
+      }
+    }
+  */
+
+  const tickets = useSelector((state) => state.tickets);  
+
+  const [showTitleFilter, setShowTitleFilter] = useState(false); 
+  const [showDescriptionFilter, setShowDescriptionFilter] = useState(false);
+  const [showStateFilter, setShowStateFilter] = useState(false);
+  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+
+  const [titleFilter, setTitleFilter] = useState('');
+  const [descriptionFilter, setDescriptionFilter] = useState('');
+  const [stateFilter, setStateFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');  
 
   const [isModalOpen,setIsModalOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState({});
 
-  const handleModal = () => {     
-    setIsModalOpen(!isModalOpen);    
+  const [filteredTickets, setFilteredTickets] = useState([]);
+
+  const [showRemoveFilter, setShowRemoveFilter] = useState(false);
+
+  const handleModal = (ticket) => {     
+    setIsModalOpen(!isModalOpen);
+    setSelectedTicket(ticket);     
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = (id) => {      
     dispatch(deleteTicket(id));
+    setFilteredTickets(filteredTickets.filter(ticket => ticket.ticketId !== id));
+    if(filteredTickets.length === 1) {
+      setShowRemoveFilter(!showRemoveFilter);
+    }
+  }  
+
+  const applyFilters = () => {
+    setShowRemoveFilter(!showRemoveFilter);
+    let newFilteredTickets = tickets;    
+  
+    if (titleFilter) {
+      newFilteredTickets = newFilteredTickets.filter(ticket => ticket.ticketTitle.includes(titleFilter));
+      setShowTitleFilter(!showTitleFilter);         
+    }
+  
+    if (descriptionFilter) {
+      newFilteredTickets = newFilteredTickets.filter(ticket => ticket.ticketDescription.includes(descriptionFilter));
+      setShowDescriptionFilter(!showDescriptionFilter);          
+    }
+  
+    if (stateFilter) {
+      newFilteredTickets = newFilteredTickets.filter(ticket => ticket.ticketState === stateFilter); 
+      setShowStateFilter(!showStateFilter);    
+    }
+  
+    if (categoryFilter) {
+      newFilteredTickets = newFilteredTickets.filter(ticket => ticket.ticketCategory === categoryFilter);  
+      setShowCategoryFilter(!showCategoryFilter);    
+    }
+    
+    if (newFilteredTickets.length === 0) {
+      alert('No se encontraron tickets con los filtros seleccionados');
+    }
+
+    setFilteredTickets(newFilteredTickets);
+  }
+
+  const handleRemoveFilters = () => {    
+    setShowRemoveFilter(!showRemoveFilter);
+    setFilteredTickets([]);
+
+    if (showTitleFilter) { 
+      setTitleFilter('');
+      setShowTitleFilter(!showTitleFilter);   
+    }
+    
+    if (showDescriptionFilter) {
+      setDescriptionFilter('');
+      setShowDescriptionFilter(!showDescriptionFilter);
+    }  
+
+    if (showStateFilter) {
+      setStateFilter('');
+      setShowStateFilter(!showStateFilter);
+    }
+
+    if (showCategoryFilter) {      
+      setCategoryFilter('');
+      setShowCategoryFilter(!showCategoryFilter);
+    }
   }
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-2">
+      <div className='flex flex-row bg-blue-800 border-b border-white'>
+        {(showRemoveFilter ) && (
+          <button onClick={handleRemoveFilters} className="py-1 px-3 m-4 absolute bg-red-500 text-white rounded">Quitar filtros</button>
+        )}
+        <h3 className="text-3xl font-medium text-white w-full text-center py-4 ">Tickets</h3>
+      </div>        
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-lg text-white uppercase bg-blue-800">
               <tr>
                   <th scope="col" className="px-6 py-3 border-r border-white">
                     Id
                   </th>
-                  <th scope="col" className="px-6 py-3 border-r border-white">
-                      Titulo
+                  <th scope="col" className="px-6 py-3 border-r border-white relative">
+                    <div className='flex flex-row space-x-4'>
+                      <h1>Titulo</h1>
+                      {showTitleFilter ? (
+                        <div className='flex flex-row relative'>
+                          <FiFilter className="mt-1 text-blue-400" onClick={() => setShowTitleFilter(!showTitleFilter)} />                          
+                        </div>  
+                      ) : (
+                        <FiFilter className="mt-1" onClick={() => setShowTitleFilter(!showTitleFilter)} />
+                      )}
+                    </div>
+                    {showTitleFilter && (
+                      <div className='flex flex-row bg-blue-600 space-x-4 text-white rounded'>
+                        <button onClick={applyFilters} className="bg-blue-500 text-white rounded h-10 p-2">Filtrar</button>                        
+                        <input type="text" className="text-black mt-4 p-2 bg-gray-50 border border-gray-300 text-lg rounded-lg" value={titleFilter} onChange={event => setTitleFilter(event.target.value)} placeholder="Filtrar por titulo" />
+                      </div>
+                    )}  
                   </th>
                   <th scope="col" className="px-6 py-3 border-r border-white">
-                      Descripcion
+                    <div className='flex flex-row space-x-4'>
+                      <h1>Descripcion</h1>
+                      {showDescriptionFilter ? (
+                        <div className='flex flex-row relative'>
+                          <FiFilter className="mt-1 text-blue-400" onClick={() => setShowDescriptionFilter(!showDescriptionFilter)} />                          
+                        </div> 
+                      ) : (                        
+                        <FiFilter className="mt-1" onClick={() => setShowDescriptionFilter(!showDescriptionFilter)} />
+                      )}                      
+                    </div>
+                    {showDescriptionFilter && (
+                      <div>
+                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500 ml-8  text-white rounded">Filtrar</button>
+                        <input type="text" className="text-black mt-4  p-2  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={descriptionFilter} onChange={(event) => setDescriptionFilter(event.target.value)} placeholder="Filtrar por descripcion" />
+                      </div>                      
+                    )}  
                   </th>
                   <th scope="col" className="px-6 py-3 border-r border-white">
-                      Estado
+                    <div className='flex flex-row space-x-4'>
+                      <h1>Estados</h1>
+                      {showStateFilter ? (
+                        <div className='flex flex-row relative' >
+                          <FiFilter className="mt-1 text-blue-400" onClick={() => setShowStateFilter(!showStateFilter)} />                          
+                        </div>                        
+                      ) : (
+                        <FiFilter className="mt-1" onClick={() => setShowStateFilter(!showStateFilter)} />
+                      )}                      
+                    </div>
+                    {showStateFilter && (
+                      <div>
+                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500  ml-8  text-white rounded">Filtrar</button>                      
+                        <select className="text-gray-400 mt-4  p-3  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={stateFilter} onChange={(event) => setStateFilter(event.target.value)}>
+                          <option >Sin filtro</option>
+                          <option >Abierto</option>
+                          <option >Cerrado</option>                      
+                        </select>
+                      </div> 
+                    )}  
                   </th>
                   <th scope="col" className="px-6 py-3 border-r border-white">
-                      Categoria
+                    <div className='flex flex-row space-x-4'>
+                      <h1>Categorias</h1>
+                      {showCategoryFilter ? (
+                        <div>
+                          <FiFilter className="mt-1 text-blue-400" onClick={() => setShowCategoryFilter(!showCategoryFilter)} />
+                          
+                        </div>                        
+                      ) : (
+                        <FiFilter className="mt-1" onClick={() => setShowCategoryFilter(!showCategoryFilter)} />
+                      )}                      
+                    </div>
+                    {showCategoryFilter && (
+                      <div>
+                        <button onClick={applyFilters} className="py-1 px-3 bg-blue-500  ml-8  text-white rounded">Filtrar</button>
+                        <select className="text-gray-400 mt-4  p-2  bg-gray-50 border border-gray-300 text-lg rounded-lg" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+                          <option >Sin filtro</option>
+                          <option >Soporte</option>
+                          <option >Interno</option>
+                          <option >Mudanza</option>
+                          <option >Instalacion</option>                                            
+                        </select>
+                      </div>                       
+                    )} 
                   </th>
-                  <th scope="col" className="px-6 py-3 border-r border-white">
+                  <th scope="col" className="px-6 py-3">
                       Accion
                   </th>
               </tr>
           </thead>
-          <tbody>
-            {tickets.map((tickets, index) => (
+          <tbody>                     
+            {(filteredTickets.length >= 1 ? filteredTickets : tickets).map((ticket, index) => (
               <tr key={index} className="odd:bg-white even:bg-gray-50">
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                  {tickets.ticketId+1}
+                  {ticket.ticketId}
                 </th>
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                  {tickets.ticketTitle}
+                  {ticket.ticketTitle}
                 </th>
                 <td className="px-6 py-4">
-                  {tickets.ticketDescription}
+                  {ticket.ticketDescription}
                 </td>
                 <td className="px-6 py-4">
-                  {tickets.ticketState}
+                  {ticket.ticketState}
                 </td>
                 <td className="px-6 py-4">
-                  {tickets.ticketCategory}
+                  {ticket.ticketCategory}
                 </td>
                 <td className="px-6 py-4">
-                  <button type="button" onClick={handleModal} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">Editar</button>
-                  <button onClick={()=>{handleDelete(tickets.ticketId)}} type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Borrar</button>
+                <div className='flex flex-row'>                  
+                  <button type="button" onClick={()=>handleModal(ticket)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">Editar</button>
+                  <button onClick={()=>{handleDelete(ticket.ticketId)}} type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Borrar</button>
+                </div>                
                 </td>
               </tr>
-            ))}            
+            ))} 
+                       
           </tbody>
       </table>
       {isModalOpen && (
-        <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
-           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-           <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 max-w-lg w-full">
-            <div className="bg-white px-4 pt-5 pb-4">              
-                <div className="mt-3 text-center">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                    Editar Ticket
-                  </h3>
-                </div>              
-            </div>
-             <div className="bg-gray-50 px-4 py-3 flex flex-row-reverse">
-              <button 
-                type="button" 
-                onClick={handleModal} 
-                className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-700 text-base font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-red-300 ml-3 w-auto"
-              >
-                Cerrar
-              </button>
-              <button 
-                type="button" 
-                onClick={handleModal} 
-                className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ml-3 w-auto"
-              >
-                Confirmar
-              </button>
-              </div>
-            </div>
-          </div>
-        </div>     
+        <TicketModal setIsModalOpen={setIsModalOpen} selectedTicket={selectedTicket} setSelectedTicket={setSelectedTicket} filteredTickets={filteredTickets} setFilteredTickets={setFilteredTickets}/>
       )}
     </div>
   )

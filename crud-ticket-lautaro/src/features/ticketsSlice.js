@@ -7,11 +7,15 @@ export const ticketsSlice = createSlice({
         addTicket: (state, action) => {
             state.push(action.payload)
         },
-        deleteTicket: (state, action) => {            
+        deleteTicket: (state, action) => {                    
             return state.filter(ticket => ticket.ticketId !== action.payload)
+        },
+        editTicket: (state, action) => {                                       
+            const {id, ticket} = action.payload;
+            state[id] = ticket;
         }
     }
 })
 
-export const {addTicket, deleteTicket} = ticketsSlice.actions;
+export const {addTicket, deleteTicket, editTicket} = ticketsSlice.actions;
 export default ticketsSlice.reducer;
