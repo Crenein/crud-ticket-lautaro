@@ -1,7 +1,7 @@
 # crud-ticket-lautaro
 # Sistema para el manejo de Tickets
 
-Este es un sistema de gestión de tickets creada con vite y construido con React ademas de Tailwind. 
+Este es un sistema de gestión de tickets construido con vite, react y Tailwind. 
 Utiliza redux como maquina de estado para el manejo de las operaciones de los tickets.
 A futuro se espera la implementacion de API para el manejo de las operaciones de los tickets
 
