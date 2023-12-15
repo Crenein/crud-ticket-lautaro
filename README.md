@@ -8,6 +8,7 @@ A futuro se espera la implementacion de API para el manejo de las operaciones de
 ## Stack
 - react 18.2.0
 - react-redux 9.0.3
+- reduxjs-toolkit 2.0.1
 - tailwindcss 3.3.6
 
 ## Características
